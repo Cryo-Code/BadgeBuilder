@@ -10,7 +10,7 @@ import fonts from "../../data/google-fonts";
 let data = [];
 
 for (let font of fonts) {
-	data.push({name: font.name, value: font.name, slot: "font"});
+	data.push({name: font.name, value: font.name, meta: { defaultVariant: font.defaultVariant, slot: "font"}});
 }
 
 let getFont = (name) => {
@@ -41,7 +41,7 @@ export default class Font extends Value {
 						<template v-slot:google-fonts="slotProps">
 							<div class="slide-block" style="height: auto;">
 								<p :style="'margin: 0; color: white; font-size: 26px; font-family: \\'' + slotProps.data.value + '\\''">{{slotProps.data.value}}</p>
-								<link :href="'https://fonts.googleapis.com/css?family=' + slotProps.data.value.replace(' ', '+')" rel="stylesheet" />
+								<link :href="'https://fonts.googleapis.com/css?family=' + slotProps.data.value.replace(' ', '+') + ':' + slotProps.data.meta.defaultVariant" rel="stylesheet" />
 							</div>
 						</template>
 					</slide-box>
@@ -111,7 +111,8 @@ export default class Font extends Value {
 							hideName: true,
 							hideGroupSlot: true,
 							default: "Roboto",
-							data: data
+							data: data,
+							meta: {defaultVariant: "400"}
 						}
 					}
 				};

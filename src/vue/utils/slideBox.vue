@@ -7,13 +7,13 @@
 			<div class="slide-groups" ref="groups" :style="'right: ' + blocks.right + 'px; top: ' + blocks.top + 'px;'">
 				<div class="slide-group" v-for="(group, key) in data" :key="key">
 					<div class="slide-block-wrap">
-						<slot v-if="!group.hideGroupSlot" class="slide-block" :name="key" :data="{value: group.default}"/>
+						<slot v-if="!group.hideGroupSlot" class="slide-block" :name="key" :data="{value: group.default, meta: group.meta || {}}"/>
 						<h4 v-if="!group.hideGroupName">{{key}}</h4>
 					</div>
 					<div class="slide-down" :style="group.canOverflow ? 'overflow: visible' : ''">
 						<input type="text" placeholder="Search" v-model="search[key]" />
 						<div class="slide-block-wrap" :style="group.canOverflow ? 'overflow: visible' : ''" @mousedown="!block.custom ? select(key, block.value) : type = key" :class="{'custom-block': block.custom}" v-for="block in searchData[key]" :key="block.name">
-							<slot v-if="!block.custom" :name="key" class="slide-block" :data="{value: block.value}" />
+							<slot v-if="!block.custom" :name="key" class="slide-block" :data="{value: block.value, meta: block.meta || {}}" />
 							<slot v-else :name="block.slot" class="slide-block" :data="valueContainer" />
 
 							<h4 v-if="!block.custom && !group.hideName">{{block.name}}</h4>
@@ -32,7 +32,7 @@
 			return {
 				editing: false,
 				type: "",
-				valueContainer: {value: ""},
+				valueContainer: {value: "", meta: {}},
 				search: {},
 				blocks: {
 					right: 0,
@@ -44,6 +44,7 @@
 		watch: {
 			value(nv) {
 				this.valueContainer.value = nv.value;
+				this.valueContainer.meta = nv.meta;
 				this.type = nv.type;
 			},
 			data(d) {
@@ -53,7 +54,6 @@
 			},
 			valueContainer: {
 				handler(v) {
-					console.log("Changed");
 					this.updateValue(v.value);
 				},
 				deep: true

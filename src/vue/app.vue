@@ -2,7 +2,21 @@
 	<div class="app">
 		<div class="main-panel">
 			<div class="zoom-panel" ref="zoom">
-				<viewer :workspace="workspace" :layers="workspace.layers"/>
+				<viewer :workspace="workspace" :background="background" :layers="workspace.layers"/>
+			</div>
+			<div class="background-selector">
+				<div class="checker-light" @click="background = 'checker-light'">
+
+				</div>
+				<div class="checker-dark" @click="background = 'checker-dark'">
+
+				</div>
+				<div class="background-light" @click="background = 'background-light'">
+
+				</div>
+				<div class="background-dark" @click="background = 'background-dark'">
+
+				</div>
 			</div>
 			<div class="toolbox" :class="{open: toolbox}">
 				<div class="toolbox-title btn waves-effect waves-light blue" @click="toolbox = !toolbox">
@@ -45,11 +59,17 @@
 			let workspace = {
 				layers: [],
 				selection: [],
-				layerIndex: 0
+				layerIndex: 0,
+				getLayer(id) {
+					for (let layer of workspace.layers)
+						if (layer.id == id)
+							return layer;
+				}
 			};
 			
 			return {
 				theme: "dark",
+				background: "background-dark",
 				workspace: workspace,
 				toolbox: false,
 				presets: presets
@@ -61,11 +81,33 @@
 			viewer
 		},
 		mounted() {
-			panzoom(this.$refs.zoom);
+			let inst = panzoom(this.$refs.zoom);
+
+			/*inst.on("zoom", (e) => {
+				let trans = e.getTransform();
+				let width = Math.max(window.innerWidth -  512 * trans.scale, 60);
+				document.documentElement.style.setProperty("--checker-size", (width/12) + "px");
+			});*/
+
+			inst.on("pan", (e) => {
+				let trans = e.getTransform();
+				if (trans.scale > 1.2) {
+					document.documentElement.style.setProperty("--pan-x", (0) + "px");
+					document.documentElement.style.setProperty("--pan-y", (0) + "px");
+					return;
+				}
+				
+				document.documentElement.style.setProperty("--pan-x", (-trans.x ) + "px");
+				document.documentElement.style.setProperty("--pan-y", (-trans.y ) + "px");
+			});
+
+			document.addEventListener("contextmenu", (e) => {
+				e.preventDefault();
+			});
 		},
 		methods: {
 			addLayer(preset) {
-				let newLayer = new BadgeBuilder.Layer();
+				let newLayer = new BadgeBuilder.Layer(null, this.workspace);
 
 				newLayer.id = this.workspace.layerIndex++;
 
@@ -102,12 +144,60 @@
 	
 	:root {
 		--background: rgb(32, 32, 32);
+		--checker-size: 2vh;
+		--pan-x: 0px;
+		--pan-y: 0px;
+	}
+
+	.checker-light {
+		background-image: /* tint image */ linear-gradient(to right, rgba(192, 192, 192, 0.75), rgba(192, 192, 192, 0.75)), /* checkered effect */ linear-gradient(to right, black 50%, white 50%), linear-gradient(to bottom, black 50%, white 50%);
+		background-blend-mode: normal, difference, normal;
+		background-size: var(--checker-size) var(--checker-size);
+		background-attachment: fixed;
+		background-position: var(--pan-x) var(--pan-y);
+	}
+
+	.checker-dark {
+		background-image: /* tint image */ linear-gradient(to right, rgba(46, 46, 46, 0.75), rgba(46, 46, 46, 0.75)), /* checkered effect */ linear-gradient(to right, black 50%, #1d1d1d 50%), linear-gradient(to bottom, black 50%, #1d1d1d 50%);
+		background-blend-mode: normal, difference, normal;
+		background-size: var(--checker-size) var(--checker-size);
+		background-attachment: fixed;
+		background-position: var(--pan-x) var(--pan-y);
+	}
+
+	.background-light {
+		background: #d1d1d1;
 	}
 
 	.color-checker-background {
 		background-image: linear-gradient(45deg, #808080 25%, transparent 25%), linear-gradient(-45deg, #808080 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #808080 75%), linear-gradient(-45deg, transparent 75%, #808080 75%);
 		background-size: 20px 20px;
 		background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+	}
+
+	.background-selector {
+		position: absolute;
+		top: 10px;
+		right: 360px;
+		display: flex;
+		flex-direction: row-reverse;
+		border: 1px solid #3c3c3c;
+		border-radius: 4px;
+		background: var(--background);
+
+		> div {
+			width: 25px;
+			height: 25px;
+			cursor: pointer;
+			transition: .3s;
+			margin: 10px;
+			border: 1px solid #3c3c3c;
+			border-radius: 4px;
+
+			&:hover {
+				transform: scale(1.2);
+			}
+		}
 	}
 
 	.app {
@@ -245,6 +335,8 @@
 			.toolbox-content {
 				border-top: 1px solid #3c3c3c;
 				flex: 100;
+
+				overflow: auto;
 				
 				width: 100%;
 
@@ -274,6 +366,11 @@
 						display: flex;
 						justify-content: center;
 						align-items: center;
+
+						i {
+							color: white;
+							font-size: 100px;
+						}
 					}
 
 					.title {

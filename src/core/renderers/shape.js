@@ -5,7 +5,7 @@ import PolyWalk from "../tools/polywalk";
 import * as Values from "../values";
 
 export default class Square extends Renderer {
-	render(createElement) {
+	render(createElement, isMask) {
 		let w = this.layer.data.size.value.width;
 		let h = this.layer.data.size.value.height;
 		let x = this.layer.data.position.value.x - w / 2;
@@ -174,13 +174,28 @@ export default class Square extends Renderer {
 
 		//let walked = path.walk(this.layer.data.path.value.value);
 		
-		return createElement("g", elems.concat(fillElems.concat([
-			createElement("path", {
-				attrs: Object.assign(fillAttr, {
-					d: path.toSVG()
-				})
+		let children = [
+			
+		];
+
+		let attrs = {};
+
+		if (!isMask)
+			attrs = this.mask(createElement, children);
+		else
+			fillAttr.fill = "black";
+
+		children.push(createElement("path", {
+			attrs: Object.assign(fillAttr, attrs, {
+				d: path.toSVG()
 			})
-		])));
+		}));
+
+		if (isMask) {
+			return children[children.length - 1];
+		}
+
+		return createElement("g", elems.concat(fillElems.concat(children)));
 	}
 
 	defaults() {

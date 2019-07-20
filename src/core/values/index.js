@@ -5,3 +5,5 @@ export {default as Select} from "./select";
 export {default as Slider} from "./slider";
 export {default as Text} from "./text";
 export {default as Font} from "./font";
+export {default as Image} from "./image";
+export {default as DualSlider} from "./dualSlider";

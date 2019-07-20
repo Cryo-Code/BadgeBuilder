@@ -1,5 +1,7 @@
 import Shape from "./renderers/shape";
 import Text from "./renderers/text";
+import Texture from "./renderers/texture";
+import Ribbon from "./renderers/ribbon";
 
 export default {
 	circle: {
@@ -20,6 +22,26 @@ export default {
 		},
 		create: () => {
 			return new Text();
+		}
+	},
+	texture: {
+		title: "Texture",
+		display: {
+			type: "icon",
+			icon: "texture"
+		},
+		create: () => {
+			return new Texture();
+		}
+	},
+	ribbon: {
+		title: "Ribbon",
+		display: {
+			type: "icon",
+			icon: "bookmarks"
+		},
+		create: () => {
+			return new Ribbon();
 		}
 	}
 };

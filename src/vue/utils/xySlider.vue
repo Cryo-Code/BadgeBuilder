@@ -3,11 +3,11 @@
 		<div class="col s10">
 			<label>{{labels.x}}</label>
 			<input type="number" v-model.number="vValue.x"/>
-			<input type="range" min="0" max="1024" v-model.number="vValue.x" />
+			<input type="range" :min="min || 0" :max="max || 1024" v-model.number="vValue.x" />
 
 			<label>{{labels.y}}</label>
 			<input type="number" v-model.number="vValue.y"/>
-			<input type="range" min="0" max="1024" v-model.number="vValue.y" />
+			<input type="range" :min="min || 0" :max="max || 1024" v-model.number="vValue.y" />
 		</div>
 		<div class="col s2" style="display: flex; align-items: center; padding: 0; height: 126px;">
 			<div class="waves-effect waves-teal btn-flat" @click="vValue.linked = !vValue.linked">
@@ -24,7 +24,7 @@
 
 <script>
 	export default {
-		props: {"value": {}, labels: {default: () => {return {x: "Width", y: "Height"};}}},
+		props: {"value": {}, min: {}, max: {}, labels: {default: () => {return {x: "Width", y: "Height"};}}},
 		data: () => {return {editing: false, vValue: {x: 0, y: 0, linked: true}}},
 		watch: {
 			value: function (nv) {

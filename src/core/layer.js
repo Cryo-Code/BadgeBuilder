@@ -2,8 +2,10 @@ import { Renderer } from "./index";
 import Value from "./values/value";
 
 export default class Layer {
-	constructor(renderer) {
+	constructor(renderer, workspace) {
 		this.name = "Layer";
+
+		this.workspace = workspace;
 
 		this.renderer = renderer || new Renderer(this);
 		this.doDefaults();

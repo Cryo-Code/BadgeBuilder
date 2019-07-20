@@ -1,5 +1,5 @@
 <template>
-	<div class="layer" @click="select" :class="{selected}">
+	<div class="layer" :data-layer-id="layer.id" @click="select" @mouseenter="$emit('mouseenter', $event)" @mouseleave="$emit('mouseleave', $event)" :class="{selected}">
 		<editable-label class="name" v-model="layer.name"/>
 	</div>
 </template>
@@ -34,6 +34,9 @@
 							if (i < this.workspace.layers.length && !this.workspace.selection.includes(this.workspace.layers[i]))
 								this.workspace.selection.push(this.workspace.layers[i]);
 					}else{
+						if (this.workspace.selection.length == 1 && this.workspace.selection[0].id == this.layer.id)
+							return;
+
 						this.workspace.selection.splice(0, this.workspace.selection.length);
 						this.workspace.selection.push(this.layer);
 					}

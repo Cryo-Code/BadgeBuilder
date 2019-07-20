@@ -17,9 +17,6 @@ export default class Slider extends Value {
 		return {
 			template: `
 				<div class="row">
-					<datalist id="ticks">
-						<option>256</option>
-					</datalist>
 					<div class="col s12">
 						<label>{{self.display}}</label>
 						<input type="number" v-model.number="self.value"/>

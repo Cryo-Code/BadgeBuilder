@@ -1,5 +1,4 @@
 <script>
-import { create } from 'domain';
 
 export default {
 	render(createElement) {

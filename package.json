@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Cryo-Code/BadgeBuilder#readme",
   "dependencies": {
     "@vue/cli": "^3.8.4",
+    "chroma-js": "^2.0.4",
     "interactjs": "^1.4.0-rc.13",
     "panzoom": "^8.1.1",
     "vue": "^2.6.10"

@@ -41,7 +41,6 @@
 							data: layer.data[k],
 							value: {mixed: false, value: layer.data[k].value}
 						};
-						console.log(k, props[k].active);
 
 						if (props[k].active != layer.data[k].active ? 1 : 0)
 							props[k].active = 2;
